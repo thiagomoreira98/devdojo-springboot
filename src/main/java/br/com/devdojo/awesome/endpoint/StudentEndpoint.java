@@ -21,7 +21,7 @@ public class StudentEndpoint {
 
     @RequestMapping(method = RequestMethod.GET, path = "/list")
     public List<Student> ListAll() {
-        System.out.println(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
+//        System.out.println(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return asList(new Student("Deku"), new Student("Todoroki"));
     }
 }
