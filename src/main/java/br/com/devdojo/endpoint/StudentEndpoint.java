@@ -1,46 +1,69 @@
 package br.com.devdojo.endpoint;
 
 import br.com.devdojo.error.CustomErrorType;
+import br.com.devdojo.error.ResourceNotFoundException;
 import br.com.devdojo.model.Student;
-import br.com.devdojo.util.DateUtil;
+import br.com.devdojo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
-
-import static java.util.Arrays.asList;
 
 @RestController
 @RequestMapping("students")
 public class StudentEndpoint {
 
-    private final DateUtil dateUtil;
-
+    private final StudentRepository studentDao;
     @Autowired
-    public StudentEndpoint(DateUtil dateUtil) {
-        this.dateUtil = dateUtil;
+    public StudentEndpoint(StudentRepository studentDao) {
+        this.studentDao = studentDao;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<?> ListAll() {
-//        System.out.println(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return new ResponseEntity<>(Student.studentList, HttpStatus.OK);
+        return new ResponseEntity<>(studentDao.findAll(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable("id") int id) {
-        Student student = new Student();
-        student.setId(id);
-        int index = Student.studentList.indexOf(student);
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getStudentById(@PathVariable("id") Long id) {
+        verifyStudentExists(id);
+        Student student = studentDao.findOne(id);
+        return new ResponseEntity<>(student, HttpStatus.OK);
+    }
 
-        if(index == -1)
-            return new ResponseEntity<>(new CustomErrorType("Student not found"), HttpStatus.NOT_FOUND);
+    @GetMapping(path = "/findByName/{name}")
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+        List<Student> students = studentDao.findByNameIgnoreCaseContaining(name);
+        return new ResponseEntity<>(students, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(Student.studentList.get(index), HttpStatus.OK);
+    @PostMapping
+    @Transactional(rollbackOn = Exception.class)
+    public ResponseEntity<?> save(@Valid @RequestBody Student student) {
+        Student result = studentDao.save(student);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        verifyStudentExists(id);
+        studentDao.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@Valid @RequestBody Student student) {
+        verifyStudentExists(student.getId());
+        studentDao.save(student);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void verifyStudentExists(Long id) {
+        if(studentDao.findOne(id) == null)
+            throw new ResourceNotFoundException("Student not found for ID: " + id);
     }
 }
