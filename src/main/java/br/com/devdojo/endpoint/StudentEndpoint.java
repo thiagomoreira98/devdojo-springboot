@@ -50,7 +50,7 @@ public class StudentEndpoint {
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        verifyStudentExists(id);
+        //verifyStudentExists(id);
         studentDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
