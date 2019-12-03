@@ -43,15 +43,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String fieldMessages = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(","));
 
         ValidationErrorDetails vedException = ValidationErrorDetails.Builder
-                .newBuilder()
-                .timestamp(new Date().getTime())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .title("Field Validation Error")
-                .detail("Field Validation Error")
-                .developerMessage(manvException.getClass().getName())
-                .fields(fields)
-                .fieldsMessages(fieldMessages)
-                .build();
+            .newBuilder()
+            .timestamp(new Date().getTime())
+            .status(HttpStatus.BAD_REQUEST.value())
+            .title("Field Validation Error")
+            .detail("Field Validation Error")
+            .developerMessage(manvException.getClass().getName())
+            .fields(fields)
+            .fieldsMessages(fieldMessages)
+            .build();
 
         return new ResponseEntity<>(vedException, HttpStatus.BAD_REQUEST);
     }

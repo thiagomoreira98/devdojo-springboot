@@ -9,7 +9,7 @@ public class Student extends AbstractEntity {
     @NotEmpty(message = "Nome é obrigatório")
     private String name;
 
-    @NotEmpty
+    @NotEmpty(message = "Email é obrigatório")
     @Email
     private String email;
 
@@ -19,5 +19,21 @@ public class Student extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
