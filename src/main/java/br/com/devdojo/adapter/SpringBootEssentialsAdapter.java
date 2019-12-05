@@ -14,8 +14,8 @@ public class SpringBootEssentialsAdapter implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-//        PageableHandlerMethodArgumentResolver phmar = new PageableHandlerMethodArgumentResolver();
-//        phmar.setFallbackPageable(PageRequest.of(0, 10));
-//        argumentResolvers.add(phmar);
+        PageableHandlerMethodArgumentResolver phmar = new PageableHandlerMethodArgumentResolver();
+        phmar.setFallbackPageable(PageRequest.of(0, 10));
+        argumentResolvers.add(phmar);
     }
 }

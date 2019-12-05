@@ -22,6 +22,6 @@ public class CustomSortDeserializer extends JsonDeserializer<Sort> {
             i++;
         }
 
-        return new Sort(orders);
+        return Sort.by(orders);
     }
 }

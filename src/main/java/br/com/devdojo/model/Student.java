@@ -10,8 +10,16 @@ public class Student extends AbstractEntity {
     private String name;
 
     @NotEmpty(message = "Email é obrigatório")
-    @Email
+    @Email(message = "Digite um email válido")
     private String email;
+
+    public Student() {
+    }
+
+    public Student(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     public String getName() {
         return name;

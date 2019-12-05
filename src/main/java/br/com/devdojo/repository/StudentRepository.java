@@ -13,6 +13,6 @@ import java.util.List;
 public interface StudentRepository extends PagingAndSortingRepository<Student, Long> {
     List<Student> findByNameIgnoreCaseContaining(String name);
 
-    @Query("select id, name from Student s where s.id = :id")
+    @Query(value = "select id, name, email from Student s where s.id = :id", nativeQuery = true)
     public Student findOne(Long id);
 }
