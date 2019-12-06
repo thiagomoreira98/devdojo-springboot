@@ -1,6 +1,5 @@
 package br.com.devdojo.endpoint;
 
-import br.com.devdojo.error.CustomErrorType;
 import br.com.devdojo.error.ResourceNotFoundException;
 import br.com.devdojo.model.Student;
 import br.com.devdojo.repository.StudentRepository;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -53,7 +51,7 @@ public class StudentEndpoint {
 
     @DeleteMapping(path = "admin/students/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        //verifyStudentExists(id);
+        verifyStudentExists(id);
         studentDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -66,6 +64,7 @@ public class StudentEndpoint {
     }
 
     private void verifyStudentExists(Long id) {
+        Student student = studentDao.findOne(id);
         if(studentDao.findOne(id) == null)
             throw new ResourceNotFoundException("Student not found for ID: " + id);
     }
