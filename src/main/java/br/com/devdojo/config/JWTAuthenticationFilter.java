@@ -36,6 +36,7 @@ public class JWTAuthenticationFilter  extends UsernamePasswordAuthenticationFilt
         }
     }
 
+    // LOGIN
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
@@ -45,6 +46,8 @@ public class JWTAuthenticationFilter  extends UsernamePasswordAuthenticationFilt
             .signWith(SignatureAlgorithm.HS512, SECRET)
             .compact();
 
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        String bearerToken = TOKEN_PREFIX + token;
+        response.getWriter().write(bearerToken); // enviar token pelo body
+        response.addHeader(HEADER_STRING, bearerToken); // enviar token pelo header
     }
 }
